@@ -1,0 +1,22 @@
+{
+  "name": "teleapi_group_messager",
+  "version": "0.0.0",
+  "description": "Demo project used to send group messages and phone calls based on a provided CSV",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Andrew Kanieski <andrew.legacy@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "~4.0.0",
+    "morgan": "~1.0.0",
+    "body-parser": "~1.0.0",
+    "method-override": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "express-session": "~1.0.2",
+    "libphonenumber": "0.0.8",
+    "node-phonenumber": "~0.1.1"
+  }
+}

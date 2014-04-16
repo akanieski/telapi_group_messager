@@ -1,0 +1,25 @@
+.btn-restart {
+    padding-left: 0px;
+}
+.btn-next {
+    padding-right: 0px;
+}
+.btn-restart button em {
+    margin-right: 5px;
+}
+.btn-next button em {
+    margin-right: 5px;
+}
+.well.well-dashed {
+    border: 2px dashed silver;
+}
+.or-box h4{
+    padding-top:110%;
+}
+.import-box img{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.browse-box {
+    cursor: pointer;
+}

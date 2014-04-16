@@ -1,0 +1,21 @@
+{
+  "name": "teleapi_group_messager",
+  "version": "0.0.0",
+  "authors": [
+    "Andrew Kanieski <andrew.legacy@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/assets",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16",
+    "bootstrap": "~3.1.1"
+  }
+}

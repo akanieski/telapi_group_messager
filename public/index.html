@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html ng-app="MainApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>TelAPI Group Messager</title>
+    <link href="assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" ng-controller="MainCtrl">
+    <div class="hidden-sm hidden-xs">
+        <br><br>
+    </div>
+    <br>
+
+    <div class="col-lg-6 col-md-8 col-sm-12 col-lg-offset-3 col-md-offset-2">
+        <div class="panel panel-default">
+
+            <div class="panel-heading clearfix">
+                <img class='col-lg-4' src="img/telapi-logo.png"> <h4 class="col-lg-6 pull-right text-right">Group
+                Messager</h4>
+            </div>
+
+            <div class="panel-body text-center" ng-show="loading" ng-cloak>
+                <h4>{{loading_message}}</h4>
+                <img src="img/ajax-loader.gif">
+            </div>
+
+            <div class="panel-body clearfix" ng-show="!loading && current_mode === modes.credentials">
+                <label>TelAPI Account SID</label>
+                <input ng-model="account_sid" class="form-control">
+                <br>
+                <label>TelAPI Authorization Token</label>
+                <input ng-model="auth_token" class="form-control">
+                <br>
+                <div class="alert alert-danger" ng-repeat="error in authentication_errors">
+                    {{error}}
+                </div>
+            </div>
+
+            <div class="panel-body" ng-show="!loading && current_mode === modes.upload">
+                <p class="text-center">
+                    <em>
+                        Upload your CSV of both names and phone numbers to be processed
+                    </em>
+                </p>
+                <br>
+                <input type="file" class="hide" file-change="file_change">
+
+                <div class="col-lg-5 col-md-5 col-sm-5">
+                    <div class="well well-dashed import-box dropzone" file-dropzone="[text/csv]" file-dropped="next"
+                         file="file_content" data-max-file-size="256">
+                        <em>Drag Your CSV Here</em>
+                        <br><br>
+                        <img src="img/csv.png" width="100%">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 text-center or-box">
+                    <h4>or</h4>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-5">
+                    <div class="well well-dashed import-box browse-box" ng-click="browse()">
+                        <em>Browse for CSV Here</em>
+                        <br><br>
+                        <img src="img/dir-search.png" width="100%">
+                    </div>
+                </div>
+                {{files.length}}
+            </div>
+
+            <div class="panel-body" ng-show="!loading && current_mode === modes.validation">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="alert alert-success text-center">
+                        <h1>{{filtered_items(true).length}}</h1>
+                        <h4>Valid</h4>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="alert alert-danger text-center">
+                        <h1>{{filtered_items(false).length}}</h1>
+                        <h4>Invalid</h4>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+
+                </div>
+            </div>
+
+            <div class="panel-footer clearfix">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-restart">
+                    <button class="btn btn-danger" ng-show="current_mode !== modes.credentials" ng-click="restart()"><em
+                            class="glyphicon glyphicon-repeat"></em>Restart
+                    </button>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-next pull-right">
+                    <button class="btn btn-success pull-right" ng-click="next()" ng-show="current_mode !== modes.upload"><em class="glyphicon glyphicon-play"></em>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="assets/jquery/dist/jquery.min.js"></script>
+<script src="assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="assets/angular/angular.min.js"></script>
+<script src="js/site.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/directives.js"></script>
+
+</body>
+</html>
