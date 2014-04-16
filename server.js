@@ -22,5 +22,5 @@ app.use(session({                                   // Session initialization se
 // Install Controllers
 require('./controllers/telapi.js').install(app);
 
-app.listen(3000 | process.env.PORT);
-console.log('TelAPI Group Messager started on port ' + (3000 | process.env.PORT)); 			// shoutout to the user
+app.listen(80 | process.env.PORT);
+console.log('TelAPI Group Messager started on port ' + (80 | process.env.PORT)); 			// shoutout to the user
