@@ -16,7 +16,7 @@
         "body-parser": "~1.0.0",
         "method-override": "~1.0.0",
         "cookie-parser": "~1.0.1",
-        "express-session": "~1.0.2"
+        "express-session": "~1.0.2",
         "node-phonenumber": "~0.1.1"
     }
 }
