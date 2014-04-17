@@ -22,8 +22,8 @@ try {
 // Install Controllers
     require('./controllers/telapi.js').install(app);
 
-    app.listen(80 | process.env.PORT);
-    console.log('TelAPI Group Messager started on port ' + (80 | process.env.PORT)); 			// shoutout to the user
+    app.listen(process.env.PORT);
+    console.log('TelAPI Group Messager started on port ' + (process.env.PORT)); 			// shoutout to the user
 } catch (err) {
     console.log(err);
     throw err;
