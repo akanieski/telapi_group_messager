@@ -20,6 +20,24 @@ app.directive('fileChange', function () {
 /*
  Makes available the droppable attribute which accepts
  */
+app.directive('submitOnEnter', function () {
+
+    return {
+        restrict: 'A',
+        link: function (scope, el, attrs) {
+            $(el).on('keydown', function (e) {
+                if (e.which === 13) {
+                    if (attrs.submitOnEnter && scope[attrs.submitOnEnter]) scope[attrs.submitOnEnter]();
+                }
+            });
+        }
+    }
+
+});
+
+/*
+ Makes available the droppable attribute which accepts
+ */
 app.directive('fileDropzone', function () {
     return {
         restrict: 'A',
@@ -38,7 +56,7 @@ app.directive('fileDropzone', function () {
             };
             validMimeTypes = attrs.fileDropzone;
             /*
-                Validate against provided file size limit
+             Validate against provided file size limit
              */
             checkSize = function (size) {
                 var _ref;
@@ -50,7 +68,7 @@ app.directive('fileDropzone', function () {
                 }
             };
             /*
-                Validate against provided MIME types
+             Validate against provided MIME types
              */
             isTypeValid = function (type) {
                 if ((validMimeTypes === (void 0) || validMimeTypes === '') || validMimeTypes.indexOf(type) > -1) {
@@ -61,7 +79,7 @@ app.directive('fileDropzone', function () {
                 }
             };
             /*
-                Bind drag events that are needed to trigger bind logic
+             Bind drag events that are needed to trigger bind logic
              */
             element.bind('dragover', processDragOverOrEnter);
             element.bind('dragenter', processDragOverOrEnter);
@@ -71,7 +89,7 @@ app.directive('fileDropzone', function () {
                     event.preventDefault();
                 }
                 /*
-                    Using HTML5's FileAPI to process file
+                 Using HTML5's FileAPI to process file
                  */
                 reader = new FileReader();
                 reader.onload = function (evt) {
@@ -80,7 +98,7 @@ app.directive('fileDropzone', function () {
                             scope.file = evt.target.result.split(',')[1];
                             scope.$parent.file = scope.file;
                             /*
-                                Trigger file dropped function either in its own scope or in its parent's scope
+                             Trigger file dropped function either in its own scope or in its parent's scope
                              */
                             if (attrs.fileDropped && (scope[attrs.fileDropped] || scope.$parent[attrs.fileDropped]))
                                 (scope[attrs.fileDropped] ? scope[attrs.fileDropped] : scope.$parent[attrs.fileDropped])();

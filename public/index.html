@@ -15,119 +15,134 @@
     </div>
     <br>
 
-    <div ng-show="!loading && current_mode !== modes.report" class="col-lg-6 col-md-8 col-sm-12 col-lg-offset-3 col-md-offset-2">
+    <div ng-show="!loading && current_mode !== modes.report"
+         class="col-lg-6 col-md-8 col-sm-12 col-lg-offset-3 col-md-offset-2">
         <div class="panel panel-default">
-
-            <div class="panel-heading clearfix">
-                <img class='col-lg-4' src="img/telapi-logo.png"> <h4 class="col-lg-6 pull-right text-right">Group
-                Messager</h4>
-            </div>
-
-            <div class="panel-body text-center" ng-show="loading" ng-cloak>
-                <h4>{{loading_message}}</h4>
-                <img src="img/ajax-loader.gif">
-            </div>
-
-            <div class="panel-body clearfix" ng-show="!loading && current_mode === modes.credentials">
-                <label>Username</label>
-                <input ng-model="username" class="form-control" autofocus="autofocus">
-                <br>
-                <label>Password</label>
-                <input ng-model="password" class="form-control" type="password">
-                <br>
-                <div class="alert alert-danger" ng-repeat="error in authentication_errors">
-                    {{error}}
+            <form ng-submit="next()" role="form" method="POST">
+                <div class="panel-heading clearfix">
+                    <img class='col-lg-4' src="img/telapi-logo.png"> <h4 class="col-lg-6 pull-right text-right">Group
+                    Messager</h4>
                 </div>
-            </div>
 
-            <div class="panel-body" ng-show="!loading && current_mode === modes.upload">
-                <p class="text-center">
-                    <em>
-                        Upload your CSV of both names and phone numbers to be processed
-                    </em>
-                </p>
-                <br>
-                <input type="file" class="hide" file-change="file_change">
+                <div class="panel-body text-center" ng-show="loading" ng-cloak>
+                    <h4>{{loading_message}}</h4>
+                    <img src="img/ajax-loader.gif">
+                </div>
 
-                <div class="col-lg-5 col-md-5 col-sm-5">
-                    <div class="well well-dashed import-box dropzone" file-dropzone="[text/csv]" file-dropped="next"
-                         file="file_content" data-max-file-size="256">
-                        <em>Drag Your CSV Here</em>
-                        <br><br>
-                        <img src="img/csv.png" width="100%">
+                <div class="panel-body clearfix" ng-show="!loading && current_mode === modes.credentials">
+
+                    <label>Username</label>
+                    <input ng-model="username" class="form-control" autofocus="autofocus" name="username">
+                    <br>
+                    <label>Password</label>
+                    <input ng-model="password" class="form-control" type="password" name="password" submit-on-enter="next">
+
+                    <br>
+
+                    <div class="alert alert-danger" ng-repeat="error in authentication_errors">
+                        {{error}}
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 text-center or-box">
-                    <h4>or</h4>
-                </div>
-                <div class="col-lg-5 col-md-5 col-sm-5">
-                    <div class="well well-dashed import-box browse-box" ng-click="browse()">
-                        <em>Browse for CSV Here</em>
-                        <br><br>
-                        <img src="img/dir-search.png" width="100%">
+
+                <div class="panel-body" ng-show="!loading && current_mode === modes.upload">
+                    <p class="text-center">
+                        <em>
+                            Upload your CSV of both names and phone numbers to be processed
+                        </em>
+                    </p>
+                    <br>
+                    <input type="file" class="hide" file-change="file_change">
+
+                    <div class="col-lg-5 col-md-5 col-sm-5">
+                        <div class="well well-dashed import-box dropzone" file-dropzone="[text/csv]" file-dropped="next"
+                             file="file_content" data-max-file-size="256">
+                            <em>Drag Your CSV Here</em>
+                            <br><br>
+                            <img src="img/csv.png" width="100%">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 text-center or-box">
+                        <h4>or</h4>
+                    </div>
+                    <div class="col-lg-5 col-md-5 col-sm-5">
+                        <div class="well well-dashed import-box browse-box" ng-click="browse()">
+                            <em>Browse for CSV Here</em>
+                            <br><br>
+                            <img src="img/dir-search.png" width="100%">
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="alert alert-danger" ng-repeat="error in upload_errors">
+                        {{error}}
                     </div>
                 </div>
-                <br>
-                <div class="alert alert-danger" ng-repeat="error in upload_errors">
-                    {{error}}
-                </div>
-            </div>
 
-            <div class="panel-body panel-validation" ng-show="!loading && current_mode === modes.validation">
-                <h3>Validation Summary</h3>
-                <hr>
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <div class="alert alert-success text-center">
-                        <h1>{{filtered_items(true, true).length}}</h1>
-                        <h4>Valid Recipients</h4>
+                <div class="panel-body panel-validation" ng-show="!loading && current_mode === modes.validation">
+                    <h3>Validation Summary</h3>
+                    <hr>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="alert alert-success text-center">
+                            <h1>{{filtered_items(true, true).length}}</h1>
+                            <h4>Valid Recipients</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="alert alert-danger text-center">
+                            <h1>{{filtered_items(false, true).length}}</h1>
+                            <h4>Invalid Recipients</h4>
+                            <a ng-show="filtered_items(false, false).length > 0"
+                               ng-click="validation_details_shown = true">[See Details]</a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-6">
-                    <div class="alert alert-danger text-center">
-                        <h1>{{filtered_items(false, true).length}}</h1>
-                        <h4>Invalid Recipients</h4>
-                        <a ng-show="filtered_items(false, false).length > 0" ng-click="validation_details_shown = true">[See Details]</a>
+
+                <div class=""
+                     ng-show="validation_details_shown && filtered_items(false, false).length > 0 && !loading && current_mode === modes.validation">
+                    <table class="table table-bordered table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Number</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in filtered_items(false, false)"
+                            ng-class="{'danger': !item.valid && !item.fixed, 'success': item.fixed}">
+                            <td><input ng-model="item.name" class="form-control"></td>
+                            <td><input ng-model="item.number" class="form-control" ng-change="validate_number(item)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel-body panel-validation" ng-show="!loading && current_mode === modes.send">
+                    <h3>Message Content</h3>
+                    <hr>
+                    <textarea placeholder="Enter SMS Message content .." ng-model="message" class="form-control"
+                              rows="4"></textarea>
+                    <br>
+                    <em class="quite pull-right"
+                        ng-class="{'text-danger': message.length > 160}">{{message.length}}/160</em>
+                    <br>
+                    <em class="quiet">* You can use <%=name%> to embed the recipients name in the message</em>
+                </div>
+
+                <div class="panel-footer clearfix">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-restart">
+                        <button class="btn btn-danger" ng-show="current_mode !== modes.credentials"
+                                ng-click="restart()"><em
+                                class="glyphicon glyphicon-repeat"></em>Restart
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-next pull-right">
+                        <button class="btn btn-success pull-right" ng-click="next()" type="submit()"
+                                ng-show="current_mode !== modes.upload"><em class="glyphicon glyphicon-play"></em>Next
+                        </button>
                     </div>
                 </div>
-            </div>
-
-            <div class="" ng-show="validation_details_shown && filtered_items(false, false).length > 0 && !loading && current_mode === modes.validation">
-                <table class="table table-bordered table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Number</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="item in filtered_items(false, false)" ng-class="{'danger': !item.valid && !item.fixed, 'success': item.fixed}">
-                        <td><input ng-model="item.name" class="form-control"></td>
-                        <td><input ng-model="item.number" class="form-control" ng-change="validate_number(item)"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="panel-body panel-validation" ng-show="!loading && current_mode === modes.send">
-                <h3>Message Content</h3>
-                <hr>
-                <textarea placeholder="Enter SMS Message content .." ng-model="message" class="form-control" rows="4"></textarea>
-                <br>
-                <em class="quite pull-right" ng-class="{'text-danger': message.length > 160}">{{message.length}}/160</em>
-                <br>
-                <em class="quiet">* You can use <%=name%> to embed the recipients name in the message</em>
-            </div>
-
-            <div class="panel-footer clearfix">
-                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-restart">
-                    <button class="btn btn-danger" ng-show="current_mode !== modes.credentials" ng-click="restart()"><em
-                            class="glyphicon glyphicon-repeat"></em>Restart
-                    </button>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5 btn-next pull-right">
-                    <button class="btn btn-success pull-right" ng-click="next()" ng-show="current_mode !== modes.upload"><em class="glyphicon glyphicon-play"></em>Next</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -143,29 +158,30 @@
             <div class="panel-body">
                 <div class="row">
                     <h3 class="col-lg-6 col-md-6 col-sm-6">Messaging Results Summary</h3>
-                    <a class="col-lg-3 col-sm-3 col-md-3 pull-right text-right" ng-click="refresh_responses()" ng-show="!refreshing">Refresh</a>
+                    <a class="col-lg-3 col-sm-3 col-md-3 pull-right text-right" ng-click="refresh_responses()"
+                       ng-show="!refreshing">Refresh</a>
                     <span class="col-lg-3 col-sm-3 col-md-3 pull-right text-right quite" ng-show="refreshing">Refreshing ...</span>
                 </div>
             </div>
 
             <table class="table table-bordered table-striped">
                 <thead>
-                    <tr>
-                        <th>To</th>
-                        <th>Message</th>
-                        <th>Date Sent</th>
-                        <th>Status</th>
-                        <th>Responses</th>
-                    </tr>
+                <tr>
+                    <th>To</th>
+                    <th>Message</th>
+                    <th>Date Sent</th>
+                    <th>Status</th>
+                    <th>Responses</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="item in items">
-                        <td>{{item.number}}</td>
-                        <td>{{item.result.body}}</td>
-                        <td>{{item.result.date_sent}}</td>
-                        <td>{{item.result.status}}</td>
-                        <td>{{item.responses.length}}</td>
-                    </tr>
+                <tr ng-repeat="item in items">
+                    <td>{{item.number}}</td>
+                    <td>{{item.result.body}}</td>
+                    <td>{{item.result.date_sent}}</td>
+                    <td>{{item.result.status}}</td>
+                    <td>{{item.responses.length}}</td>
+                </tr>
                 </tbody>
             </table>
 
