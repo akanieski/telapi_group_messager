@@ -19,8 +19,11 @@ try {
     app.use(session({                                   // Session initialization settings
         secret: 'telapi demo project',
         cookie: { maxAge: 60000 }}));
-// Install Controllers
+
+    // Install Controllers
     require('./controllers/telapi.js').install(app);
+
+    process.env.PORT = process.env.PORT ? process.env.PORT : 5000;
 
     app.listen(process.env.PORT);
     console.log('TelAPI Group Messager started on port ' + (process.env.PORT)); 			// shoutout to the user

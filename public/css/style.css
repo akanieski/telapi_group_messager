@@ -23,3 +23,10 @@
 .browse-box {
     cursor: pointer;
 }
+
+.panel-validation h3 {
+    margin-top: 0px;
+}
+.quiet {
+    color: darkgray;
+}

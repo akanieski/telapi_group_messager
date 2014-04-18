@@ -14,8 +14,9 @@ app.controller('MainCtrl', function ($scope, $http) {
         $scope.modes = {
             credentials: 'credentials',
             upload: 'upload',
-            validate: 'validate',
-            send: 'send'
+            validation: 'validation',
+            send: 'send',
+            report: 'report'
         }
 
         /*
@@ -43,13 +44,20 @@ app.controller('MainCtrl', function ($scope, $http) {
         $('input[type="file"]').trigger('click');
     }
 
+    $scope.validate_number = function (item) {
+        $http.get('/api/validate_number/' + item.number)
+            .success(function (data) {
+                item.fixed = data;
+            });
+    }
+
     /*
      Function that is called when the file selection has changed
      */
     $scope.file_change = function () {
         var file, name, reader, size, type;
         /*
-            Make sure size (mb) is under the maximum
+         Make sure size (mb) is under the maximum
          */
         checkSize = function (size) {
             var _ref;
@@ -62,7 +70,7 @@ app.controller('MainCtrl', function ($scope, $http) {
             }
         };
         /*
-            Make sure the MIME type is text/csv
+         Make sure the MIME type is text/csv
          */
         isTypeValid = function (type) {
             var validMimeTypes = ['text/csv']
@@ -74,7 +82,7 @@ app.controller('MainCtrl', function ($scope, $http) {
             }
         };
         /*
-            Using HTML5 FileAPI to process results
+         Using HTML5 FileAPI to process results
          */
         reader = new FileReader();
         reader.onload = function (evt) {
@@ -93,17 +101,34 @@ app.controller('MainCtrl', function ($scope, $http) {
     $scope.restart = function () {
         $scope.file = null;
         $scope.current_mode = $scope.modes.credentials;
+        $('input[type="file"]')[0].files = [];
     }
 
-    $scope.filtered_items = function(valid) {
+    $scope.filtered_items = function (looking_for_valid, respect_fix) {
         var items = [];
         if ($scope.items) {
             $scope.items.forEach(function (item) {
-                if ((valid && item.valid) || (!valid && !item.valid))
-                    items.push(item);
+                var go = false;
+                if (looking_for_valid) {
+                    if (item.valid) go = true;
+                    if (!item.valid && item.fixed && respect_fix) go = true;
+                } else {
+                    if (!item.valid && !respect_fix) go = true;
+                    if (!item.valid && !item.fixed && respect_fix) go = true;
+                }
+                if (go) items.push(item);
             });
         }
         return items;
+    }
+
+    $scope.refresh_responses = function () {
+        $scope.refreshing = true;
+        $http.post('/api/get_responses', {items: $scope.items, date_sent: $scope.date_sent})
+            .success(function (data) {
+                $scope.refreshing = false;
+                $scope.items = data.items;
+            });
     }
 
     $scope.next = function () {
@@ -114,11 +139,11 @@ app.controller('MainCtrl', function ($scope, $http) {
              */
             case $scope.modes.credentials:
                 /*
-                    Call web server's authenticate route to determine if the credentials provided are valid. If so move on.
+                 Call web server's authenticate route to determine if the credentials provided are valid. If so move on.
                  */
                 $scope.loading = true;
                 $scope.loading_message = 'Authenticating with TelAPI Servers ...';
-                $http.post('/api/authenticate', { account_sid: $scope.account_sid, auth_token: $scope.auth_token})
+                $http.post('/api/authenticate', { username: $scope.username, password: $scope.password})
                     .success(function (data) {
                         // Collect any errors
                         $scope.authentication_errors = data.errors;
@@ -128,7 +153,7 @@ app.controller('MainCtrl', function ($scope, $http) {
                         }
                         $scope.loading = false;
                     })
-                    .error(function(){
+                    .error(function () {
                         // Failed to communicate with server
                         $scope.authentication_errors = ['Failed to connect to TelAPI.'];
                         $scope.loading = false;
@@ -151,9 +176,29 @@ app.controller('MainCtrl', function ($scope, $http) {
                         }
                         $scope.loading = false;
                     })
-                    .error(function(){
+                    .error(function () {
                         $scope.upload_errors = ['Failed to connect to TelAPI.'];
                         $scope.loading = false;
+                    });
+                break;
+
+            case $scope.modes.validation:
+                $scope.current_mode = $scope.modes.send;
+                break;
+
+            case $scope.modes.send:
+                $scope.loading = true;
+                $scope.loading_message = 'Sending Messages ...';
+                $http.post('/api/send_messages', { items: $scope.items, message: $scope.message })
+                    .success(function (data) {
+                        $scope.loading = false;
+                        $scope.current_mode = $scope.modes.report;
+                        $scope.items = data.items;
+                        $scope.date_sent = data.date_sent;
+                    })
+                    .error(function (data) {
+                        $scope.loading = false;
+                        $scope.send_errors = data.errors;
                     });
                 break;
         }
